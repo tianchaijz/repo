@@ -1,0 +1,26 @@
+_pkgname=clippy
+pkgname=cargo-${_pkgname}
+pkgver=0
+pkgrel=1
+pkgdesc='A bunch of helpful lints to avoid common pitfalls in Rust'
+arch=('i686' 'x86_64')
+url="https://github.com/Manishearth/rust-clippy"
+license=('MPL-2.0')
+depends=('rust-nightly' 'cargo')
+if pacman -Q rust-nightly >/dev/null 2>&1; then
+  depends=('rust-nightly='$(pacman -Q rust-nightly|sed 's/^\S\+\s//;s/-\S\+$//') 'cargo')
+fi
+makedepends=()
+source=()
+md5sums=()
+
+build() {
+  cd "$srcdir"
+  rm -rf "${srcdir}/usr"
+  HOME="$srcdir" cargo install $_pkgname --root "${srcdir}/usr"
+}
+
+package() {
+  mkdir -p "${pkgdir}/usr"
+  cp -a "${srcdir}/usr/bin" "${pkgdir}/usr"
+}
